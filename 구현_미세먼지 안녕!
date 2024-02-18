@@ -1,0 +1,45 @@
+r, c, t = map(int, input().split())
+ori_board, air_cleaner = [], []
+
+ori_board = [list(map(int, input().split()))
+             for _ in range(r)]
+
+# airclear 위치 받기
+# air_cleaner =
+
+#######################################################
+dxs, dys = [0, 1, 0, -1], [1, 0, -1, 0]
+
+def in_range(x, y):
+    return 0 <= x and x < r and 0 <= y and y < c
+
+def diffusion(ori_board):
+    # diffused 는 확산된 미세먼지의 양을 말한다.
+    diffused = [[0 for _ in range(c)] for _ in range(r)]
+    global dxs, dys
+    for i in range(r):
+        for j in range(c):
+            print(f"original board[{i}][{j}] 에 대해서")
+            count = 0
+            if ori_board[i][j] != 0 or ori_board[i][j] != -1:
+                print(f"ori_board{[i]}{[j]} 는 미세먼지가 있는 칸")
+                for dx, dy in zip(dxs, dys):
+                    ni, nj = i + dx, j + dy
+                    print(f"얘는 단순히 방향, 새롭게 만들어진 애들은 {ni}, {nj}")
+                    if in_range(ni, nj) and ori_board[i][j] != 0 and ori_board[i][j] != -1:
+                        print(f"인접 칸인 ori_board[{ni}][{nj}]에 확산! 이때 이 칸에 원래 있던 미세먼지 값은 {ori_board[ni][nj]}")
+                        count += 1
+                        #### 여기에서, 중복으로 안 더해져!!
+                        diffused[ni][nj] += ori_board[i][j] // 5
+                print(count)
+                # 원래 미세먼지에서 확산된 만큼 줄어든 양. 나중에 두 개를 합치면 최종 먼지가 나옴.
+                ori_board[i][j] -= (ori_board[i][j] // 5) * count
+
+    result = [[0 for _ in range(c)] for _ in range(r)]
+    for i in range(r):
+        for j in range(c):
+            result[i][j] = ori_board[i][j] + diffused[i][j]
+
+    print(result)
+
+diffusion(ori_board)
